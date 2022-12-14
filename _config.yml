@@ -1,4 +1,4 @@
-remote_theme: pages-themes/tactile@v0.2.0
+remote_theme: pages-themes/tactile@v0.2.0 #https://github.com/pages-themes/tactile
 plugins:
   - jekyll-relative-links  #es el plugin que convierte los archivos MD a HTML
   # Viene de aquíhttps://www.linkedin.com/pulse/crear-p%C3%A1gina-web-en-5-minutos-con-github-y-markdown-mario-f-abreu/?originalSubdomain=es
@@ -6,5 +6,5 @@ plugins:
   - jekyll-remote-theme # para que funcione eltema Tactile
 relative_links:
   enabled: true
-title: [The title of your site]
-description: [A short description of your site's purpose]
+title: Mi Recetario Freaky
+description: Conjunto passos a seguir en la puesta en funcionamiento de mis mini proyectos
