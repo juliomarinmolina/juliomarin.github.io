@@ -1,7 +1,8 @@
+---
 layout: page
-title: "Sobre esto"
-permalink: /about
-
+title: Sobre esto
+permalink: /about/
+---
 ### Sobre mi:
 
 TBD
