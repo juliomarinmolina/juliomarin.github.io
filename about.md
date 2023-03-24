@@ -1,8 +1,6 @@
----
 layout: page
 title: "Sobre esto"
 permalink: /about
----
 
 ### Sobre mi:
 
