@@ -1,12 +1,12 @@
 
 
-Esto es un ejemplo
+
 
 ### SlowMotion con RPi:
 
 TBD
 
-##### Librería gpoto2:
+#### Librería gpoto2:
 
 Hemos usado la librearía gphoto2.
 
