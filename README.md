@@ -4,9 +4,31 @@
 
 ### SlowMotion con RPi:
 
-TBD
+Se presentó una primera opción para intentar aprovechar camaras de fotos digitales, controlandolas por USB mediante la librería "gphoto2" (ver al final) pero ninguna de las 3 cámaras ha sido compatible con esta librería. Pasamos a la opción de una cámara conectada directamente al puerto "Camera" de la RaspberryPi.
 
-#### Librería gpoto2:
+
+
+#### Librería libcamera (conexión cable ribon "Camera")
+Enlace interesante sobre esta librería.
+[https://www.raspberrypi.com/documentation/computers/camera_software.html#creating-timelapse-video](https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera-and-libcamera-apps)
+
+Comprobamos si se ha detectado la cámara
+```bash
+pi@raspberrypi:~ $ vcgencmd get_camera
+supported=0 detected=0, libcamera interfaces=0
+```
+No se ha detectado.
+Entramos en la gonfiguraciónde la pi, con 
+```bash
+pi@raspberrypi:~ $ sudo raspi-config
+```
+Quizás haya que activar En Advances activamos "Glamor"
+
+Y en /boot/config.txt
+Asegurarse de que  dtoverlay=vc4-fkms-v3d **¿¿¿y/o???** dtoverlay=vc4-kms-v3d
+creo que hay que poner: camera_auto_detect=1
+
+#### Librería gphoto2 (conexión USB):
 
 Hemos usado la librearía gphoto2.
 
