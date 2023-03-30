@@ -50,6 +50,13 @@ drwx------ 3 pi   pi      4096 Mar 30 08:02 .gnupg
 https://roboticsbackend.com/raspberry-pi-camera-take-picture/
 https://solectroshop.com/es/content/65-10-usar-una-camara-en-rpi
 
+#### Node Red en Raspberry 3.
+docker run -itd -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /docker/portainer:/data portainer/portainer-ce
+
+docker run --name nodered -itd --restart=always -p 1880:1880 -v /docker/nodered/data:/data  nodered/node-red
+```bash
+docker run -it --security-opt=seccomp=unconfined -p 1880:1880 -v /docker/nodered/data:/data --name nodered -u 0 --restart=always nodered/node-red
+```
 #### Comando libcamera (conexión cable ribon "Camera")
 Enlace interesante sobre esta librería.
 [https://www.raspberrypi.com/documentation/computers/camera_software.html#creating-timelapse-video](https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera-and-libcamera-apps)
