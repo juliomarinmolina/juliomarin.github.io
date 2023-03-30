@@ -28,6 +28,19 @@ Y en /boot/config.txt
 Asegurarse de que  dtoverlay=vc4-fkms-v3d **¿¿¿y/o???** dtoverlay=vc4-kms-v3d
 creo que hay que poner: camera_auto_detect=1
 
+obtengo este error:
+
+```bash
+pi@raspberrypi:~ $ libcamera-still -o test.jpg
+libEGL warning: DRI3: failed to query the version
+libEGL warning: DRI2: failed to authenticate
+X Error of failed request:  BadRequest (invalid request code or no such operation)
+  Major opcode of failed request:  155 ()
+  Minor opcode of failed request:  1
+  Serial number of failed request:  16
+  Current serial number in output stream:  16
+```
+
 #### Librería gphoto2 (conexión USB):
 
 Hemos usado la librearía gphoto2.
