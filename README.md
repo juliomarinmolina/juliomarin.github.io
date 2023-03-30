@@ -4,11 +4,51 @@
 
 ### SlowMotion con RPi:
 
-Se presentó una primera opción para intentar aprovechar camaras de fotos digitales, controlandolas por USB mediante la librería "gphoto2" (ver al final) pero ninguna de las 3 cámaras ha sido compatible con esta librería. Pasamos a la opción de una cámara conectada directamente al puerto "Camera" de la RaspberryPi.
+Se presentó una primera opción para intentar aprovechar camaras de fotos digitales, controlandolas por USB mediante la librería "gphoto2" (ver al final) pero ninguna de las 3 cámaras ha sido compatible con esta librería. Pasamos a la opción de una cámara conectada directamente al puerto "Camera" de la RaspberryPi (comando libcamera), pero parecía que con la versión ultima de Raspbian:
+```bash
+pi@raspberrypi:~ $ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Raspbian
+Description:	Raspbian GNU/Linux 11 (bullseye)
+Release:	11
+Codename:	bullseye
+
+```
 
 
+**Bajamos a la versión anterior:**
+```bash
+pi@raspberrypi:~ $ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Raspbian
+Description:	Raspbian GNU/Linux 10 (buster)
+Release:	10
+Codename:	buster
+```
 
-#### Librería libcamera (conexión cable ribon "Camera")
+Y ahora, sigue detectandoloa, como veíamos con libcamera, 
+```bash
+pi@raspberrypi:~ $ vcgencmd get_camera
+supported=1 detected=1
+```
+pero porfin podemos tomar capturas, es funcional: 
+```bash
+pi@raspberrypi:~ $ raspistill -o image.jpg
+pi@raspberrypi:~ $ ls -la
+total 2260
+drwxr-xr-x 3 pi   pi      4096 Mar 30 11:39 .
+drwxr-xr-x 3 root root    4096 Feb 21 03:08 ..
+-rw------- 1 pi   pi        57 Mar 30 11:17 .Xauthority
+-rw-r--r-- 1 pi   pi       220 Feb 21 03:08 .bash_logout
+-rw-r--r-- 1 pi   pi      3523 Feb 21 03:08 .bashrc
+drwx------ 3 pi   pi      4096 Mar 30 08:02 .gnupg
+-rw-r--r-- 1 pi   pi       807 Feb 21 03:08 .profile
+-rw-r--r-- 1 pi   pi   2282040 Mar 30 11:39 image.jpg
+```
+
+#### Comando raspistill (conexión cable ribon "Camera")
+
+#### Comando libcamera (conexión cable ribon "Camera")
 Enlace interesante sobre esta librería.
 [https://www.raspberrypi.com/documentation/computers/camera_software.html#creating-timelapse-video](https://www.raspberrypi.com/documentation/computers/camera_software.html#libcamera-and-libcamera-apps)
 
