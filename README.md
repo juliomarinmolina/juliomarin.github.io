@@ -48,6 +48,7 @@ drwx------ 3 pi   pi      4096 Mar 30 08:02 .gnupg
 
 #### Comando raspistill (conexión cable ribon "Camera")
 https://roboticsbackend.com/raspberry-pi-camera-take-picture/
+https://solectroshop.com/es/content/65-10-usar-una-camara-en-rpi
 
 #### Comando libcamera (conexión cable ribon "Camera")
 Enlace interesante sobre esta librería.
