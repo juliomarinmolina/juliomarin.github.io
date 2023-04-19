@@ -2,7 +2,194 @@
 
 ### Mi Recetario Freaky
 
-### SlowMotion con RPi:
+### TimeLapse con RPi:
+NOTA:Estamos con Raspbian 10 Bullseye pq en algún momento de poroblemas con las librerias de toma de fotos empezó a funcionar , pero no recuerdo si es precisamente con la librería que ya estamos usando como definitiva "raspistill", o con las anteriores.
+
+#### Comando raspistill (conexión cable ribon "Camera")
+https://roboticsbackend.com/raspberry-pi-camera-take-picture/
+
+https://solectroshop.com/es/content/65-10-usar-una-camara-en-rpi
+
+#### Node Red en Raspberry 3.
+Hice muchas pruebas con nodered sobre docker y no terminé de poder hacer que el contenedor guardara la imágen en /home/pi de la poropia RPi, así que se pensaod que todo lo voy a hacer con Node-Red y que no voy a necesitar ningun otro servivcio he instalado nodered directamente sin docker.
+Desde la porpia docu oficial de NodeRed: 
+https://nodered.org/docs/getting-started/local, 
+y específicamente desde aquí:
+https://nodered.org/docs/getting-started/raspberrypi
+```bash
+pi@raspberrypi: $ bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+```
+
+#### Pendiente que arranque solo al arrancar la Pi!!
+#### Pendiente cambio de contraseña al usuario pi!!
+#### Wifi e IP fija.
+Partimos de solo conexión cableada con IP dinámica
+```bash
+pi@raspberrypi:~ $ ifconfig
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        inet6 fe80::42:78ff:fef7:e4c1  prefixlen 64  scopeid 0x20<link>
+        ether 02:42:78:f7:e4:c1  txqueuelen 0  (Ethernet)
+        RX packets 1914  bytes 4491296 (4.2 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 2004  bytes 494816 (483.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.0.126  netmask 255.255.255.0  broadcast 192.168.0.255
+        inet6 fe80::f927:4704:41cf:5ffb  prefixlen 64  scopeid 0x20<link>
+        inet6 2a0c:5a84:620a:ae00:693:2247:f4ef:33df  prefixlen 64  scopeid 0x0<
+        global>
+        ether b8:27:eb:04:32:87  txqueuelen 1000  (Ethernet)
+        RX packets 179156  bytes 42427068 (40.4 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 74937  bytes 73226736 (69.8 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 35  bytes 3385 (3.3 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 35  bytes 3385 (3.3 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+```
+La wifi parece que no está activada:
+```bash
+pi@raspberrypi:~ $ ifconfig wlan0
+wlan0: error fetching interface information: Device not found
+```
+```bash
+# A sample configuration for dhcpcd.
+# See dhcpcd.conf(5) for details.
+
+# Allow users of this group to interact with dhcpcd via the control socket.
+#controlgroup wheel
+
+# Inform the DHCP server of our hostname for DDNS.
+hostname
+
+# Use the hardware address of the interface for the Client ID.
+clientid
+# or
+# Use the same DUID + IAID as set in DHCPv6 for DHCPv4 ClientID as per RFC4361.
+# Some non-RFC compliant DHCP servers do not reply with this set.
+# In this case, comment out duid and enable clientid above.
+#duid
+
+# Persist interface configuration when dhcpcd exits.
+persistent
+
+# Rapid commit support.
+# Safe to enable by default because it requires the equivalent option set
+# on the server to actually work.
+option rapid_commit
+
+# A list of options to request from the DHCP server.
+option domain_name_servers, domain_name, domain_search, host_name
+option classless_static_routes
+# Respect the network MTU. This is applied to DHCP routes.
+option interface_mtu
+
+# Most distributions have NTP support.
+#option ntp_servers
+
+# A ServerID is required by RFC2131.
+require dhcp_server_identifier
+
+# Generate SLAAC address using the Hardware Address of the interface
+#slaac hwaddr
+# OR generate Stable Private IPv6 Addresses based from the DUID
+slaac private
+
+# Example static IP configuration:
+#interface eth0
+#static ip_address=192.168.0.10/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1 8.8.8.8 fd51:42f8:caae:d92e::1
+
+# It is possible to fall back to a static IP if DHCP fails:
+# define static profile
+#profile static_eth0
+#static ip_address=192.168.1.23/24
+#static routers=192.168.1.1
+#static domain_name_servers=192.168.1.1
+
+# fallback to static profile on eth0
+#interface eth0
+#fallback static_eth0
+interface wlan0
+static ip_address=192.168.0.99/24
+static routers=192.168.0.1
+static domain_name_servers=192.168.0.1 8.8.8.8
+
+```
+
+añadimos al final de /etc/dhcpcd.conf
+Por aqu
+
+#### Configurar el logging con contraseña en nodered.
+Para que pida usuario y contraseña hemos recurrido aqui:
+https://nodered.org/docs/user-guide/runtime/securing-node-red
+En concreto hemos editado y modificado:
+```bash
+pi@raspberrypi:$ sudo nano /home/pi/.node-red/settings.js
+```
+NOTA: Para crear la contrseña encriptada se usa un comando que te pide la contraseña y te devuelve encritada para que la peqes directamente en el archivo de config.
+Usuario: timelapse
+Pass: timesun
+
+Se arranca el servicio con:
+```bash
+pi@raspberrypi:~ $ node-red-start
+
+Start Node-RED
+ 
+Once Node-RED has started, point a browser at http://192.168.0.126:1880
+On Pi Node-RED works better with the Firefox or Chrome browser
+ 
+Use   node-red-stop                          to stop Node-RED
+Use   node-red-start                         to start Node-RED again
+Use   node-red-log                           to view the recent log output
+Use   sudo systemctl enable nodered.service  to autostart Node-RED at every boot
+Use   sudo systemctl disable nodered.service to disable autostart on boot
+ 
+To find more nodes and example flows - go to http://flows.nodered.org
+ 
+Starting as a systemd service.
+19 Apr 19:07:31 - [info]
+Welcome to Node-RED
+===================
+19 Apr 19:07:32 - [info] Node-RED version: v3.0.2
+19 Apr 19:07:32 - [info] Node.js  version: v16.19.1
+19 Apr 19:07:32 - [info] Linux 5.10.103+ arm LE
+19 Apr 19:07:46 - [info] Loading palette nodes
+19 Apr 19:08:08 - [info] Settings file  : /home/pi/.node-red/settings.js
+19 Apr 19:08:08 - [info] Context store  : 'default' [module=memory]
+19 Apr 19:08:08 - [info] User directory : /home/pi/.node-red
+19 Apr 19:08:08 - [warn] Projects disabled : editorTheme.projects.enabled=false
+19 Apr 19:08:08 - [info] Flows file     : /home/pi/.node-red/flows.json
+19 Apr 19:08:09 - [info] Server now running at http://127.0.0.1:1880/
+19 Apr 19:08:09 - [warn] Using unencrypted credentials
+19 Apr 19:08:09 - [info] Starting flows
+19 Apr 19:08:11 - [info] Started flows
+
+```
+y se para con:
+```bash
+pi@raspberrypi:~ $ node-red-stop
+```
+
+#### Descarga de las imágenes que hay en la pi desde nuestro Ubuntu.
+
+```bash
+julio@julio-SLIMBOOK:~$ scp pi@192.168.0.126:~/Pictures/*.jpg /home/julio/Documentos/
+```
+
+### Opciones invalidas o desechadas con RPi:
 
 Se presentó una primera opción para intentar aprovechar camaras de fotos digitales, controlandolas por USB mediante la librería "gphoto2" (ver al final) pero ninguna de las 3 cámaras ha sido compatible con esta librería. Pasamos a la opción de una cámara conectada directamente al puerto "Camera" de la RaspberryPi (comando libcamera), pero parecía que con la versión ultima de Raspbian:
 ```bash
@@ -15,7 +202,6 @@ Codename:	bullseye
 
 ```
 
-
 **Bajamos a la versión anterior:**
 ```bash
 pi@raspberrypi:~ $ lsb_release -a
@@ -25,6 +211,7 @@ Description:	Raspbian GNU/Linux 10 (buster)
 Release:	10
 Codename:	buster
 ```
+
 
 Y ahora, sigue detectandoloa, como veíamos con libcamera, 
 ```bash
@@ -182,3 +369,10 @@ LensZoomPosCaps(0xd38c): error 200a on query.
 ...
 ...
 ```
+#### ¿Librería específica de Python? 
+Casi seguro que no es nacesario, pero por si acaso:
+En algún momento hemos instalado esto
+```bash
+pi@raspberrypi:$ sudo apt-get install python-picamera python3-picamera
+```
+Creo que es para uno de los componentes de toma de imágenes en Nodered cuando usábamos Docker. 
